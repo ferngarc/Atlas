@@ -1,33 +1,34 @@
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04 
 
 RUN apt-get update && apt-get install -y \
-    cmake \
-    wget \
-    git \
-    rsync \
-    sudo \
-    zip \ 
-    vim \
-    ssh \
-    unzip \
-    screen \
-    openssh-server \
-    pkg-config \
-    build-essential \
-    libboost-all-dev \
-    libsuitesparse-dev \
-    libfreeimage-dev \
-    libgoogle-glog-dev \
-    libgflags-dev \
-    libglew-dev \
-    freeglut3-dev \
-    qt5-default \
-    libxmu-dev \
-    libxi-dev \
-    libatlas-base-dev \
-    libsuitesparse-dev \
-    libcgal-dev \ 
-    libeigen3-dev \
+  cmake \
+  wget \
+  curl \
+  git \
+  rsync \
+  sudo \
+  zip \ 
+  vim \
+  ssh \
+  unzip \
+  screen \
+  openssh-server \
+  pkg-config \
+  build-essential \
+  libboost-all-dev \
+  libsuitesparse-dev \
+  libfreeimage-dev \
+  libgoogle-glog-dev \
+  libgflags-dev \
+  libglew-dev \
+  freeglut3-dev \
+  qt5-default \
+  libxmu-dev \
+  libxi-dev \
+  libatlas-base-dev \
+  libsuitesparse-dev \
+  libcgal-dev \ 
+  libeigen3-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Ceres Solver
@@ -47,17 +48,17 @@ WORKDIR /
 
 # Install Miniconda
 RUN curl -so /miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && chmod +x /miniconda.sh \
- && /miniconda.sh -b -p /miniconda \
- && rm /miniconda.sh
+  && chmod +x /miniconda.sh \
+  && /miniconda.sh -b -p /miniconda \
+  && rm /miniconda.sh
 
 ENV PATH=/miniconda/bin:$PATH
 
 
 # Create a Python 3.6 environment
 RUN conda install -y conda-build \
- && conda create -y --name py36 python=3.6.7 \
- && conda clean -ya
+  && conda create -y --name py36 python=3.6.7 \
+  && conda clean -ya
 
 ENV CONDA_DEFAULT_ENV=py36
 ENV CONDA_PREFIX=/miniconda/envs/$CONDA_DEFAULT_ENV
@@ -78,7 +79,9 @@ RUN python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron
 
 # For 16bit mixed precision
 RUN git clone https://github.com/NVIDIA/apex
-RUN pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./apex
+RUN cd apex
+RUN pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" .
+RUN cd ..
 
 # add headless support for pyrender
 # https://pyrender.readthedocs.io/en/latest/install/index.html
